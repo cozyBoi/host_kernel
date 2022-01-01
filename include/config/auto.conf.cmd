@@ -1248,7 +1248,7 @@ endif
 ifneq "$(KERNELVERSION)" "4.18.0-240.10.1.el8.x86_64.emp"
 include/config/auto.conf: FORCE
 endif
-ifneq "$(CC_VERSION_TEXT)" "gcc (GCC) 8.4.1 20200928 (Red Hat 8.4.1-1)"
+ifneq "$(CC_VERSION_TEXT)" "gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-4)"
 include/config/auto.conf: FORCE
 endif
 ifneq "$(srctree)" "."

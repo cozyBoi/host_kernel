@@ -1,0 +1,1 @@
+cmd_arch/x86/kernel/cpu/mce/mce-inject.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000 -T ./scripts/module-common.lds  --build-id  -o arch/x86/kernel/cpu/mce/mce-inject.ko arch/x86/kernel/cpu/mce/mce-inject.o arch/x86/kernel/cpu/mce/mce-inject.mod.o ;  true

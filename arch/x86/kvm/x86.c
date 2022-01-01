@@ -16,6 +16,7 @@
  *   Ben-Ami Yassour <benami@il.ibm.com>
  */
 
+#include <linux/kernel.h>
 #include <linux/kvm_host.h>
 #include "irq.h"
 #include "ioapic.h"
@@ -7575,9 +7576,9 @@ static void kvm_sched_yield(struct kvm *kvm, unsigned long dest_id)
 
 int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
 {
-	unsigned long nr, a0, a1, a2, a3, ret;
+	unsigned long nr, a0, a1, a2, a3, ret = 0;
 	int op_64_bit;
-
+	printk("[kvm_emulate_hypercall] hypercall!");
 	if (kvm_hv_hypercall_enabled(vcpu->kvm))
 		return kvm_hv_hypercall(vcpu);
 
@@ -7624,7 +7625,8 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
 		kvm_sched_yield(vcpu->kvm, a0);
 		ret = 0;
 		break;
-	case KVM_HC_USR_HYPERCALL:
+	case 12:
+		printk("hello!!!!\n");
 		trace_printk("Hello World");
 		break;
 	default:
