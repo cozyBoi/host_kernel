@@ -1,1 +1,0 @@
-cmd_arch/x86/kvm/kvm-amd.o := ld -m elf_x86_64  -z max-page-size=0x200000   -r -o arch/x86/kvm/kvm-amd.o arch/x86/kvm/svm/svm.o arch/x86/kvm/svm/vmenter.o arch/x86/kvm/svm/pmu.o arch/x86/kvm/svm/nested.o arch/x86/kvm/svm/avic.o arch/x86/kvm/svm/sev.o ; scripts/mod/modpost arch/x86/kvm/kvm-amd.o

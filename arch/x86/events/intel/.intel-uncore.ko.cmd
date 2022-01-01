@@ -1,1 +1,0 @@
-cmd_arch/x86/events/intel/intel-uncore.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000 -T ./scripts/module-common.lds  --build-id  -o arch/x86/events/intel/intel-uncore.ko arch/x86/events/intel/intel-uncore.o arch/x86/events/intel/intel-uncore.mod.o ;  true

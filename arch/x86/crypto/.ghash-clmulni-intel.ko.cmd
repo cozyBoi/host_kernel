@@ -1,1 +1,0 @@
-cmd_arch/x86/crypto/ghash-clmulni-intel.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000 -T ./scripts/module-common.lds  --build-id  -o arch/x86/crypto/ghash-clmulni-intel.ko arch/x86/crypto/ghash-clmulni-intel.o arch/x86/crypto/ghash-clmulni-intel.mod.o ;  true
