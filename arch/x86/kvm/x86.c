@@ -74,7 +74,8 @@
 #include <asm/intel_pt.h>
 #include <clocksource/hyperv_timer.h>
 #include <asm/emulate_prefix.h>
-
+#include <asm/uaccess.h>
+#include <asm/types.h>
 #define CREATE_TRACE_POINTS
 #include "trace.h"
 
@@ -2145,7 +2146,7 @@ static u64 read_tsc(void)
 static inline u64 vgettsc(struct pvclock_clock *clock, u64 *tsc_timestamp,
 			  int *mode)
 {
-	long v;
+	long v = 0;
 	u64 tsc_pg_val;
 
 	switch (clock->vclock_mode) {
@@ -7574,10 +7575,21 @@ static void kvm_sched_yield(struct kvm *kvm, unsigned long dest_id)
 		kvm_vcpu_yield_to(target);
 }
 
+unsigned long long int pow16(int p){
+        int i = 0;
+        unsigned long long int ret = 1;
+        for(i = 0; i < p; i++){
+            ret *= 16;
+        }
+        return ret;
+}
+
 int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
 {
 	unsigned long nr, a0, a1, a2, a3, ret = 0;
 	int op_64_bit;
+	//unsigned char arguments[16] = {0, };
+	u64 target_gpa; 
 	printk("[kvm_emulate_hypercall] hypercall!");
 	if (kvm_hv_hypercall_enabled(vcpu->kvm))
 		return kvm_hv_hypercall(vcpu);
@@ -7627,7 +7639,11 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
 		break;
 	case 12:
 		printk("hello!!!!\n");
-		trace_printk("Hello World");
+		printk("arg 0 : %ld\n", a0);
+		printk("arg 1 : %ld\n", a1);
+
+		target_gpa = a0 * pow16(8) + a1;
+		printk("target_gpa %llx\n", target_gpa);
 		break;
 	default:
 		ret = -KVM_ENOSYS;
