@@ -57,6 +57,7 @@
 #include <linux/sched/stat.h>
 #include <linux/sched/isolation.h>
 #include <linux/mem_encrypt.h>
+#include <linux/kvm_host.h>
 
 #include <trace/events/kvm.h>
 
@@ -76,6 +77,9 @@
 #include <asm/emulate_prefix.h>
 #include <asm/uaccess.h>
 #include <asm/types.h>
+
+#include <kvm_emulate.h>
+
 #define CREATE_TRACE_POINTS
 #include "trace.h"
 
@@ -7587,9 +7591,11 @@ unsigned long long int pow16(int p){
 int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
 {
 	unsigned long nr, a0, a1, a2, a3, ret = 0;
-	int op_64_bit;
+	int op_64_bit, i;
 	//unsigned char arguments[16] = {0, };
-	u64 target_gpa; 
+	struct x86_exception error;
+	u64 target_gva, target_gpa;
+	char data[16];
 	printk("[kvm_emulate_hypercall] hypercall!");
 	if (kvm_hv_hypercall_enabled(vcpu->kvm))
 		return kvm_hv_hypercall(vcpu);
@@ -7642,8 +7648,20 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
 		printk("arg 0 : %ld\n", a0);
 		printk("arg 1 : %ld\n", a1);
 
-		target_gpa = a0 * pow16(8) + a1;
-		printk("target_gpa %llx\n", target_gpa);
+		target_gva = a0 * pow16(8) + a1;
+		printk("target_gva %llx\n", target_gva);
+		for(i = 0; i < 16; i++){
+			data[i] = 0x00 + i;
+		}
+
+		target_gpa = vcpu->arch.mmu->gva_to_gpa(vcpu, target_gva, 0, &error);
+		ret = kvm_write_guest(vcpu->kvm, target_gpa, data, 16);
+		if(ret < 0){
+			printk("communication fail\n");
+		}
+		else{
+			printk("communication success\n");
+		}
 		break;
 	default:
 		ret = -KVM_ENOSYS;
