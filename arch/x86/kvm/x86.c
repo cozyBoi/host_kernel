@@ -7655,7 +7655,9 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
 		}
 
 		target_gpa = vcpu->arch.mmu->gva_to_gpa(vcpu, target_gva, 0, &error);
-		ret = kvm_write_guest(vcpu->kvm, target_gpa, data, 16);
+		printk("target_gpa %llx\n", target_gpa);
+		//ret = kvm_write_guest(vcpu->kvm, target_gpa, data, 16);
+		ret = kvm_write_guest(vcpu->kvm, target_gpa, &target_gpa, 16);
 		if(ret < 0){
 			printk("communication fail\n");
 		}
