@@ -7588,7 +7588,15 @@ unsigned long long int pow16(int p){
         return ret;
 }
 
-extern int EMP_iMG_change_comm_buff(unsigned long long int gpa_addr);
+
+//extern int EMP_iMG_change_comm_buff(unsigned long long int gpa_addr);
+typedef struct EMP_iMG_operations {
+         void(*change_comm_buff) (unsigned long long int gpa_addr);
+         int(*write_comm_buff) (struct kvm_vcpu*, gva_t);
+         int(*read_comm_buff) (void);
+} EMP_IMG_OPERATIONS;
+EMP_IMG_OPERATIONS *EMP_iMG_op = NULL;
+EXPORT_SYMBOL(EMP_iMG_op);
 int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
 {
 	unsigned long nr, a0, a1, a2, a3, ret = 0;
@@ -7659,7 +7667,7 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
 		printk("target_gpa %llx\n", target_gpa);
 		//ret = kvm_write_guest(vcpu->kvm, target_gpa, data, 16);
 		//ret = kvm_write_guest(vcpu->kvm, target_gpa, &target_gpa, 16);
-		EMP_iMG_change_comm_buff(target_gpa);
+		EMP_iMG_op->change_comm_buff(target_gpa);
 		if(ret < 0){
 			printk("communication fail\n");
 		}
