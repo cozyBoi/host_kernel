@@ -7588,6 +7588,7 @@ unsigned long long int pow16(int p){
         return ret;
 }
 
+extern int EMP_iMG_change_comm_buff(unsigned long long int gpa_addr);
 int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
 {
 	unsigned long nr, a0, a1, a2, a3, ret = 0;
@@ -7644,7 +7645,7 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
 		ret = 0;
 		break;
 	case 12:
-		printk("hello!!!!\n");
+		printk("hypercall get comm_buff address\n");
 		printk("arg 0 : %ld\n", a0);
 		printk("arg 1 : %ld\n", a1);
 
@@ -7657,7 +7658,8 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
 		target_gpa = vcpu->arch.mmu->gva_to_gpa(vcpu, target_gva, 0, &error);
 		printk("target_gpa %llx\n", target_gpa);
 		//ret = kvm_write_guest(vcpu->kvm, target_gpa, data, 16);
-		ret = kvm_write_guest(vcpu->kvm, target_gpa, &target_gpa, 16);
+		//ret = kvm_write_guest(vcpu->kvm, target_gpa, &target_gpa, 16);
+		EMP_iMG_change_comm_buff(target_gpa);
 		if(ret < 0){
 			printk("communication fail\n");
 		}
