@@ -7597,6 +7597,9 @@ typedef struct EMP_iMG_operations {
 } EMP_IMG_OPERATIONS;
 EMP_IMG_OPERATIONS *EMP_iMG_op = NULL;
 EXPORT_SYMBOL(EMP_iMG_op);
+int EMP_IMG_HYPERCALL_FLAG = 0;
+EXPORT_SYMBOL(EMP_IMG_HYPERCALL_FLAG);
+
 int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
 {
 	unsigned long nr, a0, a1, a2, a3, ret = 0;
@@ -7668,6 +7671,7 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
 		//ret = kvm_write_guest(vcpu->kvm, target_gpa, data, 16);
 		//ret = kvm_write_guest(vcpu->kvm, target_gpa, &target_gpa, 16);
 		EMP_iMG_op->change_comm_buff(target_gpa);
+        EMP_IMG_HYPERCALL_FLAG = 1;
 		if(ret < 0){
 			printk("communication fail\n");
 		}
